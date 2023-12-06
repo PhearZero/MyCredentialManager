@@ -213,31 +213,31 @@ class MainActivity : AppCompatActivity() {
 
         val request = PublicKeyCredentialCreationOptions(requestJson)
 
-        val biometricPrompt = BiometricPrompt(
-            this,
-            this.mainExecutor,
-        object : BiometricPrompt.AuthenticationCallback() {
-            override fun onAuthenticationError(
-                errorCode: Int, errString: CharSequence
-            ) {
-                super.onAuthenticationError(errorCode, errString)
-                Log.e("MyCredMan", "onAuthenticationError"+errorCode.toString()+"  " +errString)
-                TODO("inplement fallback in case BIOMETRIC is not available")
-
-                finish()
-            }
-
-            override fun onAuthenticationFailed() {
-                super.onAuthenticationFailed()
-                Log.e("MyCredMan", "onAuthenticationFailed")
-
-                finish()
-            }
-
-            override fun onAuthenticationSucceeded(
-                result: BiometricPrompt.AuthenticationResult
-            ) {
-                super.onAuthenticationSucceeded(result)
+//        val biometricPrompt = BiometricPrompt(
+//            this,
+//            this.mainExecutor,
+//        object : BiometricPrompt.AuthenticationCallback() {
+//            override fun onAuthenticationError(
+//                errorCode: Int, errString: CharSequence
+//            ) {
+//                super.onAuthenticationError(errorCode, errString)
+//                Log.e("MyCredMan", "onAuthenticationError"+errorCode.toString()+"  " +errString)
+//                TODO("inplement fallback in case BIOMETRIC is not available")
+//
+//                finish()
+//            }
+//
+//            override fun onAuthenticationFailed() {
+//                super.onAuthenticationFailed()
+//                Log.e("MyCredMan", "onAuthenticationFailed")
+//
+//                finish()
+//            }
+//
+//            override fun onAuthenticationSucceeded(
+//                result: BiometricPrompt.AuthenticationResult
+//            ) {
+//                super.onAuthenticationSucceeded(result)
 
                 // Generate a credentialId
                 val credentialId = ByteArray(32)
@@ -260,7 +260,7 @@ class MainActivity : AppCompatActivity() {
                     rpid = rpid,
                     serviceName = request.rp.name,
                     credentialId = credentialId,
-                    displayName = request.user.displayName,
+                    displayName = request.user.name,
                     userHandle = request.user.id,
                     keyPair = keyPair
                 ))
@@ -278,7 +278,7 @@ class MainActivity : AppCompatActivity() {
                     be = true,
                     bs = true,
                     packageName = callingAppInfo.packageName,
-                    clientDataHash = clientDataHash
+//                    clientDataHash = clientDataHash
                 )
 
                 val credential = FidoPublicKeyCredential(
@@ -299,21 +299,21 @@ class MainActivity : AppCompatActivity() {
                 )
                 setResult(Activity.RESULT_OK, result)
                 finish()
-            }
-        }
-        )
+//            }
+//        }
+//        )
 
-        val promptInfo = BiometricPrompt.PromptInfo.Builder()
-            .setTitle("Use your screen lock")
-            .setSubtitle("Create passkey for ${request.rp.name}")
-            .setAllowedAuthenticators(
-                BiometricManager.Authenticators.BIOMETRIC_STRONG
-                /* or BiometricManager.Authenticators.DEVICE_CREDENTIAL */
-            )
-            .setNegativeButtonText("Cancel")
-
-            .build()
-        biometricPrompt.authenticate(promptInfo)
+//        val promptInfo = BiometricPrompt.PromptInfo.Builder()
+//            .setTitle("Use your screen lock")
+//            .setSubtitle("Create passkey for ${request.rp.name}")
+//            .setAllowedAuthenticators(
+//                BiometricManager.Authenticators.BIOMETRIC_STRONG
+//                /* or BiometricManager.Authenticators.DEVICE_CREDENTIAL */
+//            )
+//            .setNegativeButtonText("Cancel")
+//
+//            .build()
+//        biometricPrompt.authenticate(promptInfo)
     }
 
     private fun populateEasyAccessorFields(json: String, rpid:String , keyPair: KeyPair, credentialId: ByteArray):String{
@@ -352,30 +352,30 @@ class MainActivity : AppCompatActivity() {
     fun validatePasskey(requestJson:String, origin:String, packageName:String, uid:ByteArray, username:String, credId:ByteArray, privateKey: ECPrivateKey, clientDataHash: ByteArray?){
         val request = PublicKeyCredentialRequestOptions(requestJson)
 
-        val biometricPrompt = BiometricPrompt(
-            this,
-            this.mainExecutor,
-            object : BiometricPrompt.AuthenticationCallback() {
-                override fun onAuthenticationError(
-                    errorCode: Int, errString: CharSequence
-                ) {
-                    super.onAuthenticationError(errorCode, errString)
-                    Log.e("MyCredMan", "onAuthenticationError"+errorCode.toString()+"  " +errString)
-                    TODO("inplement fallback in case BIOMETRIC is not available")
-                    finish()
-                }
-
-                override fun onAuthenticationFailed() {
-                    super.onAuthenticationFailed()
-                    Log.e("MyCredMan", "onAuthenticationFailed")
-
-                    finish()
-                }
-
-                override fun onAuthenticationSucceeded(
-                    result: BiometricPrompt.AuthenticationResult
-                ) {
-                    super.onAuthenticationSucceeded(result)
+//        val biometricPrompt = BiometricPrompt(
+//            this,
+//            this.mainExecutor,
+//            object : BiometricPrompt.AuthenticationCallback() {
+//                override fun onAuthenticationError(
+//                    errorCode: Int, errString: CharSequence
+//                ) {
+//                    super.onAuthenticationError(errorCode, errString)
+//                    Log.e("MyCredMan", "onAuthenticationError"+errorCode.toString()+"  " +errString)
+//                    TODO("inplement fallback in case BIOMETRIC is not available")
+//                    finish()
+//                }
+//
+//                override fun onAuthenticationFailed() {
+//                    super.onAuthenticationFailed()
+//                    Log.e("MyCredMan", "onAuthenticationFailed")
+//
+//                    finish()
+//                }
+//
+//                override fun onAuthenticationSucceeded(
+//                    result: BiometricPrompt.AuthenticationResult
+//                ) {
+//                    super.onAuthenticationSucceeded(result)
                     val response = AuthenticatorAssertionResponse(
                         requestOptions = request,
                         credentialId = credId,
@@ -386,7 +386,7 @@ class MainActivity : AppCompatActivity() {
                         bs = true,
                         userHandle = uid,
 //                        packageName = packageName
-                        clientDataHash = clientDataHash
+//                        clientDataHash = clientDataHash
                     )
 
                     Log.d("MyCredMan", "response.dataToSign(): ${CredmanUtils.b64Encode(response.dataToSign())}")
@@ -406,20 +406,20 @@ class MainActivity : AppCompatActivity() {
                     )
                     setResult(RESULT_OK, result)
                     finish()
-                }
-            }
-        )
+//                }
+//            }
+//        )
 
-        val promptInfo = BiometricPrompt.PromptInfo.Builder()
-            .setTitle("Use your screen lock")
-            .setSubtitle("Use passkey for ${request.rpId}")
-            .setAllowedAuthenticators(
-                BiometricManager.Authenticators.BIOMETRIC_STRONG
-                /* or BiometricManager.Authenticators.DEVICE_CREDENTIAL */
-            )
-            .setNegativeButtonText("Cancel") // this needs to be added when using BIOMETRIC
-            .build()
-        biometricPrompt.authenticate(promptInfo)
+//        val promptInfo = BiometricPrompt.PromptInfo.Builder()
+//            .setTitle("Use your screen lock")
+//            .setSubtitle("Use passkey for ${request.rpId}")
+//            .setAllowedAuthenticators(
+//                BiometricManager.Authenticators.BIOMETRIC_STRONG
+//                /* or BiometricManager.Authenticators.DEVICE_CREDENTIAL */
+//            )
+//            .setNegativeButtonText("Cancel") // this needs to be added when using BIOMETRIC
+//            .build()
+//        biometricPrompt.authenticate(promptInfo)
     }
 
 
@@ -487,8 +487,8 @@ class MainActivity : AppCompatActivity() {
 
 @Serializable
 data class GetPublicKeyCredentialRequestJson(
-//    val allowCredentials:Array<AllowCredential>?,
-    val allowList:Array<AllowCredential>?,
+    val allowCredentials:Array<AllowCredential>? = null,
+    val allowList:Array<AllowCredential>? = null,
     val challenge:String,
     val rpId:String,
     val userVerification: String,
