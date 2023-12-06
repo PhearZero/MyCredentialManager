@@ -482,3 +482,22 @@ class MainActivity : AppCompatActivity() {
 
 }
 
+
+
+
+@Serializable
+data class GetPublicKeyCredentialRequestJson(
+//    val allowCredentials:Array<AllowCredential>?,
+    val allowList:Array<AllowCredential>?,
+    val challenge:String,
+    val rpId:String,
+    val userVerification: String,
+    val timeout: Int? = null
+) {
+    @Serializable
+    data class AllowCredential(
+        val id: String,
+        val transports:Array<String>,
+        val type: String
+    )
+}
